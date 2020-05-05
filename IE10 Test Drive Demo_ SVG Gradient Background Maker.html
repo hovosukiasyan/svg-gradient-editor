@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<!-- saved from url=(0080)https://testdrive-archive.azurewebsites.net/Graphics/SVGGradientBackgroundMaker/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+    <!-- Copyright © Microsoft Corporation. All Rights Reserved. -->
+    <!-- Demo Author: IE, Microsoft Corporation -->   
+    <!-- Credits: jscolor, by Jan Odvarko (http://odvarko.cz) --> 
+	<!-- Credits: base-64 URL encoder/decoder, by webtoolkit (http://www.webtoolkit.info/javascript-base64.html) --> 
+    <meta name="description" content="Use this demo to create SVG-based CSS background-image gradients. The CSS markup
+            works in browsers which support SVG as a background-image including Internet Explorer 9, Chrome, Safari,
+            and Opera.">
+    <meta name="t_omni_demopage" content="1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" type="text/css" href="./IE10 Test Drive Demo_ SVG Gradient Background Maker_files/BaseStyles.css">
+    <link rel="stylesheet" type="text/css" href="./IE10 Test Drive Demo_ SVG Gradient Background Maker_files/DemoTemplate.css">
+    <link rel="stylesheet" type="text/css" href="./IE10 Test Drive Demo_ SVG Gradient Background Maker_files/ReturnAndShareControls.css">
+    <link rel="stylesheet" type="text/css" href="./IE10 Test Drive Demo_ SVG Gradient Background Maker_files/Demo.css">
+    <link rel="shortcut icon" href="https://testdrive-archive.azurewebsites.net/Includes/Image/FavIcon.ico">
+    <script type="text/javascript" src="IE10%20Test%20Drive%20Demo_%20SVG%20Gradient%20Background%20Maker_files/FeatureDetection.js" data-detect=""></script>
+
+    <title>IE10 Test Drive Demo: SVG Gradient Background Maker</title>
+</head>
+<body onload="init()" cz-shortcut-listen="true">
+    <div id="ReturnAndShareControls"></div>
+    <h1 id="DemoTitle">
+        SVG Gradient Background Maker
+    </h1>
+    <div id="DemoIntroduction">
+        <p>
+            Use this demo to create SVG-based CSS background-image gradients. The CSS markup
+            works in browsers which support SVG as a background-image including Internet Explorer 9, Chrome, Safari,
+            and Opera.
+			<img src="./IE10 Test Drive Demo_ SVG Gradient Background Maker_files/SVGBanner.png" width="200" style="float:right; padding-top: 15px">
+		</p>
+    </div>
+    <div id="DemoContent">
+       <table id="controlwrapper" onchange="UpdateSample();">
+            <tbody><tr>
+                <td class="labelCell">
+                    Existing markup:
+                </td>
+                <td class="dataCell" id="markupPanel">
+                    <a id="htxtlink" href="javascript:showImportGradMarkup()">Click to paste existing CSS base64-URL background-image markup</a>
+                    <textarea style="display: none;" id="markupsource"></textarea>
+					<div>
+						<a id="parselink" style="float: left; display: none; padding-right: 5px;" href="javascript:loadMarkup()">Parse</a>
+						<div id="markuptype" style="float: left;"></div>
+						<a id="hidelink" style="float: right; display: none; padding: 0px;" href="javascript:hideImportGradMarkup()">Hide</a>
+					</div>
+                </td>
+            </tr>
+            <tr>
+                <td class="labelCell">
+                    Gradient style:
+                </td>
+                <td class="dataCell">
+                    <form id="gtype">
+                    <input type="radio" id="lgrad" name="gradtype" value="Linear" onclick="loadLinearTable()"><label for="lgrad">Linear</label>
+                    <input type="radio" id="egrad" name="gradtype" value="Elliptical" onclick="loadRadialTable(&#39;ellipse&#39;)"><label for="egrad">Radial</label>
+                    </form>
+                </td>
+            </tr>
+            <tr>
+                <td class="labelCell">
+                    Stops:
+                </td>
+                <td class="dataCell">
+                    <!-- START table of stops -->
+                    <table>
+                        <tbody id="stops">
+                            <tr id="stopsLabel">
+                                <td>
+                                </td>
+                                <td id="firstLabel">
+                                    Start
+                                </td>
+                                <td id="lastLabel">
+                                    End
+                                </td>
+                            </tr>
+                            <tr id="stopsOffset">
+                                <td>
+                                    Offset:
+                                </td>
+                                <td id="firstOffset">
+                                    <input id="offset0" type="text" size="6" value="0">
+                                </td>
+                                <td id="lastOffset">
+                                    <input id="offsetN" type="text" size="6" value="1">
+                                </td>
+                            </tr>
+                            <tr id="stopsColor">
+                                <td style="font-weight: normal;">
+                                    Color:
+                                </td>
+                                <td id="firstColor">
+                                    <input type="text" class="color" id="color0" size="6" value="FFFFFF" autocomplete="off" style="background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);">
+                                </td>
+                                <td id="lastColor">
+                                    <input type="text" class="color" id="colorN" size="6" value="E3A820" autocomplete="off" style="background-color: rgb(227, 168, 32); color: rgb(0, 0, 0);">
+                                </td>
+                            </tr>
+                            <tr id="stopsButton">
+                                <td style="font-weight: normal;">
+                                    <a href="javascript:InsertStop();">Add Stop</a>
+                                </td>
+                                <td id="firstButton">
+                                </td><td id="lastButton">
+                            </td></tr>
+                        </tbody>
+                    </table>
+                    <!-- END table of stops -->
+                </td>
+            </tr>
+            <tr>
+                <td class="labelCell">
+                    Start:
+                </td>
+                <td class="dataCell" id="posPanel" onchange="updateAllPanels();">
+                    <table id="thumbnailPosPanel"><tr><td><div class="positionThumbnail" id="pos0" style="background-image: url(&quot;data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxIDEiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPgo8bGluZWFyR3JhZGllbnQgaWQ9Imc0NjMiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KPHN0b3Agc3RvcC1jb2xvcj0iI0ZGRkZGRiIgb2Zmc2V0PSIwIi8+PHN0b3Agc3RvcC1jb2xvcj0iI0UzQTgyMCIgb2Zmc2V0PSIxIi8+CjwvbGluZWFyR3JhZGllbnQ+CjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjZzQ2MykiIC8+Cjwvc3ZnPg==&quot;); border: 2px solid red;">top left</div></td><td><div class="positionThumbnail" id="pos1" style="background-image: url(&quot;data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxIDEiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPgo8bGluZWFyR3JhZGllbnQgaWQ9Imc0NjQiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMTAwJSI+CjxzdG9wIHN0b3AtY29sb3I9IiNGRkZGRkYiIG9mZnNldD0iMCIvPjxzdG9wIHN0b3AtY29sb3I9IiNFM0E4MjAiIG9mZnNldD0iMSIvPgo8L2xpbmVhckdyYWRpZW50Pgo8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2c0NjQpIiAvPgo8L3N2Zz4=&quot;); border: 2px solid white;">top</div></td><td><div class="positionThumbnail" id="pos2" style="background-image: url(&quot;data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxIDEiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPgo8bGluZWFyR3JhZGllbnQgaWQ9Imc0NjYiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMTAwJSIgeTE9IjAlIiB4Mj0iMCUiIHkyPSIxMDAlIj4KPHN0b3Agc3RvcC1jb2xvcj0iI0ZGRkZGRiIgb2Zmc2V0PSIwIi8+PHN0b3Agc3RvcC1jb2xvcj0iI0UzQTgyMCIgb2Zmc2V0PSIxIi8+CjwvbGluZWFyR3JhZGllbnQ+CjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjZzQ2NikiIC8+Cjwvc3ZnPg==&quot;); border: 2px solid white;">top right</div></td><td><div class="positionThumbnail" id="pos3" style="background-image: url(&quot;data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxIDEiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPgo8bGluZWFyR3JhZGllbnQgaWQ9Imc0NjciIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIwJSI+CjxzdG9wIHN0b3AtY29sb3I9IiNGRkZGRkYiIG9mZnNldD0iMCIvPjxzdG9wIHN0b3AtY29sb3I9IiNFM0E4MjAiIG9mZnNldD0iMSIvPgo8L2xpbmVhckdyYWRpZW50Pgo8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2c0NjcpIiAvPgo8L3N2Zz4=&quot;); border: 2px solid white;">left</div></td><td><div class="positionThumbnail" id="pos4" style="background-image: url(&quot;data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxIDEiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPgo8bGluZWFyR3JhZGllbnQgaWQ9Imc0NjciIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMTAwJSIgeTE9IjEwMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgo8c3RvcCBzdG9wLWNvbG9yPSIjRkZGRkZGIiBvZmZzZXQ9IjAiLz48c3RvcCBzdG9wLWNvbG9yPSIjRTNBODIwIiBvZmZzZXQ9IjEiLz4KPC9saW5lYXJHcmFkaWVudD4KPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNnNDY3KSIgLz4KPC9zdmc+&quot;); border: 2px solid white;">right</div></td><td><div class="positionThumbnail" id="pos5" style="background-image: url(&quot;data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxIDEiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPgo8bGluZWFyR3JhZGllbnQgaWQ9Imc0NjciIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMCUiIHkxPSIxMDAlIiB4Mj0iMTAwJSIgeTI9IjAlIj4KPHN0b3Agc3RvcC1jb2xvcj0iI0ZGRkZGRiIgb2Zmc2V0PSIwIi8+PHN0b3Agc3RvcC1jb2xvcj0iI0UzQTgyMCIgb2Zmc2V0PSIxIi8+CjwvbGluZWFyR3JhZGllbnQ+CjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjZzQ2NykiIC8+Cjwvc3ZnPg==&quot;); border: 2px solid white;">bottom left</div></td><td><div class="positionThumbnail" id="pos6" style="background-image: url(&quot;data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxIDEiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPgo8bGluZWFyR3JhZGllbnQgaWQ9Imc0NjgiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMTAwJSIgeTE9IjEwMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPgo8c3RvcCBzdG9wLWNvbG9yPSIjRkZGRkZGIiBvZmZzZXQ9IjAiLz48c3RvcCBzdG9wLWNvbG9yPSIjRTNBODIwIiBvZmZzZXQ9IjEiLz4KPC9saW5lYXJHcmFkaWVudD4KPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNnNDY4KSIgLz4KPC9zdmc+&quot;); border: 2px solid white;">bottom</div></td><td><div class="positionThumbnail" id="pos7" style="background-image: url(&quot;data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxIDEiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPgo8bGluZWFyR3JhZGllbnQgaWQ9Imc0NjgiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMTAwJSIgeTE9IjEwMCUiIHgyPSIwJSIgeTI9IjAlIj4KPHN0b3Agc3RvcC1jb2xvcj0iI0ZGRkZGRiIgb2Zmc2V0PSIwIi8+PHN0b3Agc3RvcC1jb2xvcj0iI0UzQTgyMCIgb2Zmc2V0PSIxIi8+CjwvbGluZWFyR3JhZGllbnQ+CjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjZzQ2OCkiIC8+Cjwvc3ZnPg==&quot;); border: 2px solid white;">bottom right</div></td><td><div class="positionThumbnail" id="pos8" style="background-image: url(&quot;data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxIDEiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPgo8bGluZWFyR3JhZGllbnQgaWQ9Imc0NjgiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KPHN0b3Agc3RvcC1jb2xvcj0iI0ZGRkZGRiIgb2Zmc2V0PSIwIi8+PHN0b3Agc3RvcC1jb2xvcj0iI0UzQTgyMCIgb2Zmc2V0PSIxIi8+CjwvbGluZWFyR3JhZGllbnQ+CjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjZzQ2OCkiIC8+Cjwvc3ZnPg==&quot;); border: 2px solid white;">custom</div></td></tr></table></td><td>
+            </td></tr>
+            <tr id="sizes" style="display: none;">
+                <td class="labelCell">
+                    Sizes:
+                </td>
+                <td class="dataCell" id="sizePanel" onchange="updateAllPanels();">
+                    </td><td>
+            </td></tr>
+            <tr>
+                <td class="labelCell">
+                    Sample:
+                </td>
+                <td class="dataCell">
+					<div id="otherSample" style="background-image: url(&quot;data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxIDEiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPgo8bGluZWFyR3JhZGllbnQgaWQ9Imc0NjkiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KPHN0b3Agc3RvcC1jb2xvcj0iI0ZGRkZGRiIgb2Zmc2V0PSIwIi8+PHN0b3Agc3RvcC1jb2xvcj0iI0UzQTgyMCIgb2Zmc2V0PSIxIi8+CjwvbGluZWFyR3JhZGllbnQ+CjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjZzQ2OSkiIC8+Cjwvc3ZnPg==&quot;); background-repeat: no-repeat;">
+ 						<svg id="customLinearSVG" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" style="display: none">
+							<svg id="customSVGGrid" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" style="display: block">
+								<circle id="p1" cx="0%" cy="0%" r="5" fill="none" stroke="gray" stroke-width="1"></circle>
+								<circle id="p2" cx="50%" cy="0%" r="5" fill="none" stroke="gray" stroke-width="1"></circle>
+								<circle id="p3" cx="100%" cy="0%" r="5" fill="none" stroke="gray" stroke-width="1"></circle>
+								<circle id="p4" cx="0%" cy="50%" r="5" fill="none" stroke="gray" stroke-width="1"></circle>
+								<circle id="p5" cx="50%" cy="50%" r="5" fill="none" stroke="gray" stroke-width="1"></circle>
+								<circle id="p6" cx="100%" cy="50%" r="5" fill="none" stroke="gray" stroke-width="1"></circle>
+								<circle id="p7" cx="0%" cy="100%" r="5" fill="none" stroke="gray" stroke-width="1"></circle>
+								<circle id="p8" cx="50%" cy="100%" r="5" fill="none" stroke="gray" stroke-width="1"></circle>
+								<circle id="p9" cx="100%" cy="100%" r="5" fill="none" stroke="gray" stroke-width="1"></circle>
+							</svg>
+							<line id="linearline" x1="0" x2="974" y1="0" y2="280" fill="none" stroke="#666" stroke-width="1"></line>
+							<rect id="linearstart" x="-4" y="-4" width="8" height="8"></rect>
+							<rect id="linearend" x="970" y="276" width="8" height="8"></rect>
+						</svg> 
+						 <svg id="customRadialSVG" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" style="display: none">
+						 	<svg id="customSVGGrid" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" style="display: block">
+								<circle id="p1" cx="0%" cy="0%" r="5" fill="none" stroke="gray" stroke-width="1"></circle>
+								<circle id="p2" cx="50%" cy="0%" r="5" fill="none" stroke="gray" stroke-width="1"></circle>
+								<circle id="p3" cx="100%" cy="0%" r="5" fill="none" stroke="gray" stroke-width="1"></circle>
+								<circle id="p4" cx="0%" cy="50%" r="5" fill="none" stroke="gray" stroke-width="1"></circle>
+								<circle id="p5" cx="50%" cy="50%" r="5" fill="none" stroke="gray" stroke-width="1"></circle>
+								<circle id="p6" cx="100%" cy="50%" r="5" fill="none" stroke="gray" stroke-width="1"></circle>
+								<circle id="p7" cx="0%" cy="100%" r="5" fill="none" stroke="gray" stroke-width="1"></circle>
+								<circle id="p8" cx="50%" cy="100%" r="5" fill="none" stroke="gray" stroke-width="1"></circle>
+								<circle id="p9" cx="100%" cy="100%" r="5" fill="none" stroke="gray" stroke-width="1"></circle>
+							</svg>
+							<line id="radialline" x1="0%" x2="0%" y1="100%" y2="100%" fill="none" stroke="#666" stroke-width="1"></line>
+							<circle id="radialcenter" style="display: none" cx="487" cy="140" r="5"></circle>
+							<rect id="radialradius" style="display: none" x="726.5" y="206" width="8" height="8"></rect>
+						</svg>
+					</div>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="labelCell">
+                    SVG source:
+                </td>
+                <td class="dataCell">
+                    <textarea id="svgsource" readonly="true"></textarea>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="labelCell">
+                    CSS markup:
+                </td>
+                <td class="dataCell">
+                    <textarea id="othersource" readonly="true"></textarea>
+                </td>
+            </tr>		
+			
+        </tbody></table>
+    </div>
+    <div id="DemoDetails">
+        This demo uses <a href="http://jscolor.com/">jscolor</a> (a JavaScript color picker
+        developed by <a href="http://odvarko.cz/">Jan Odvarko</a>) and a base-64 URL encoder/decoder
+        from <a href="http://www.webtoolkit.info/javascript-base64.html">webtoolkit</a>.
+    </div>
+    <script type="text/javascript" src="IE10%20Test%20Drive%20Demo_%20SVG%20Gradient%20Background%20Maker_files/Demo.js"></script>
+	<script type="text/javascript" src="IE10%20Test%20Drive%20Demo_%20SVG%20Gradient%20Background%20Maker_files/base64.js"></script>
+	<script type="text/javascript" src="IE10%20Test%20Drive%20Demo_%20SVG%20Gradient%20Background%20Maker_files/svgdraw.js"></script>
+    <script type="text/javascript" src="IE10%20Test%20Drive%20Demo_%20SVG%20Gradient%20Background%20Maker_files/jscolor.js"></script>
+    <script type="text/javascript" src="IE10%20Test%20Drive%20Demo_%20SVG%20Gradient%20Background%20Maker_files/TestDriveCommon.js"></script>
+    <script type="text/javascript" src="IE10%20Test%20Drive%20Demo_%20SVG%20Gradient%20Background%20Maker_files/ReturnAndShareControls.js"></script>
+
+</body></html>
